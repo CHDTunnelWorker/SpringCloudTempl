@@ -1,0 +1,10 @@
+server:
+  port: 6000
+spring:
+  application:
+    name: consumer-ribbon
+
+eureka:
+  client:
+    service-url:
+      defaultZone:  http://laohu:123456@localhost:8090/eureka

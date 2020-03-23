@@ -1,0 +1,16 @@
+#通过随机数来生成端口,可通过这个对同一个服务在同一台机器上启动多个服务
+server:
+  port: ${random.int[7000,8000]}
+
+
+spring:
+  application:
+    name: provider
+
+eureka:
+  client:
+    service-url:
+      defaultZone:  http://laohu:123456@localhost:8090/eureka
+  #由于同一个服务在同一台机器上启动多个服务
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
