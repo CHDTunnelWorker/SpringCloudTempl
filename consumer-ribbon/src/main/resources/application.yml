@@ -1,5 +1,5 @@
 server:
-  port: 6000
+  port: 9000
 spring:
   application:
     name: consumer-ribbon
@@ -7,4 +7,10 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone:  http://laohu:123456@localhost:8090/eureka
+      defaultZone:  http://laohu:123456@localhost:8090/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+    #\u5411eureka\u670D\u52A1\u7AEF\u66F4\u65B0\u81EA\u5DF1\u5B9E\u4F8B\u4FE1\u606F\u7684\u95F4\u9694\u65F6\u95F4
+    instance-info-replication-interval-seconds: 15
+    #\u4ECEeureka\u5BA2\u6237\u7AEF\u83B7\u5F97\u670D\u52A1\u6E05\u5355\u7684\u95F4\u9694\u65F6\u95F4
+    registry-fetch-interval-seconds: 15

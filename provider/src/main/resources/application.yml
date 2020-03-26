@@ -1,6 +1,6 @@
 #通过随机数来生成端口,可通过这个对同一个服务在同一台机器上启动多个服务
 server:
-  port: ${random.int[7000,8000]}
+  port: 7001
 
 
 spring:
@@ -10,7 +10,16 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone:  http://laohu:123456@localhost:8090/eureka
-  #由于同一个服务在同一台机器上启动多个服务
+      defaultZone:  http://laohu:123456@localhost:8090/eureka/
+    #是否从eureka获取服务清单
+    fetch-registry: true
+    #是否将服务注册到eureka
+    register-with-eureka: true
+    #向eureka服务端更新自己实例信息的间隔时间
+    instance-info-replication-interval-seconds: 15
+    #从eureka客户端获得服务清单的间隔时间
+    registry-fetch-interval-seconds: 15
+  #由于同一个服务在同一台机器上启动多个相同服务,如果不指定实例名称,那么所有服务都会以一个实例名注册,最后只有一个服务能够
+  #正常提供服务
   instance:
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${random.int}
