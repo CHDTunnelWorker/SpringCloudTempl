@@ -20,6 +20,7 @@
         <module>eureka</module>
         <module>provider</module>
         <module>consumer-ribbon</module>
+        <module>api</module>
     </modules>
 
     <properties>
