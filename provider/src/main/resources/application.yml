@@ -2,10 +2,19 @@
 server:
   port: 7001
 
-
 spring:
   application:
     name: provider
+  datasource:
+    url: jdbc:mysql://localhost:3306/study?characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: dandy
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 100
+      maxLifetime: 1765000
+      minimum-idle: 10
 
 eureka:
   client:

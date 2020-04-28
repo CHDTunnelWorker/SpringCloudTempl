@@ -3,7 +3,7 @@ server:
 
 eureka:
   server:
-    enableSelfPreservation: false
+    enableSelfPreservation: false #关闭Eureka的自我保护机制(防止失效的实例不能被正确的剔除)
     eviction-interval-timer-in-ms: 2000
   instance:
     hostname: localhost #\u670D\u52A1\u6CE8\u518C\u4E2D\u5FC3\u5B9E\u4F8B\u7684\u4E3B\u673A\u540D

@@ -1,13 +1,12 @@
 package com.laohu.provider.controller;
 
+import com.alibaba.fastjson.JSON;
 import entity.User;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,27 +32,86 @@ public class HelloController {
         return "hello provider";
     }
 
-    @RequestMapping(value = "/userRibbonString")
-    public String userRibbonString(
-            @RequestParam String name,@RequestParam(required = false) Integer age
+    /**
+     * 测试ribbon负载均衡访问返回字符串,参数为普通属性
+     * @param name
+     * @param age
+     * @return
+     */
+    @GetMapping(value = "/getStringFromRibbonParam")
+    public String getStringFromRibbonParam(
+            @RequestParam String name,@RequestParam(required = false) String age
     )
     {
-        if(age == null){
-            age = 20;
+        Integer ageNum = null;
+        if(StringUtils.isBlank(age)){
+            ageNum = 20;
+        } else {
+            ageNum = Integer.valueOf(age);
         }
-        User user = new User(name,age);
+        User user = new User(name,ageNum);
+        //展示被调用的服务
+        System.out.println(user.toString());
         return user.toString();
     }
 
-    @RequestMapping(value = "/userRibbonEntity")
-    public User userRibbonEntity(
-            @RequestParam String name,@RequestParam(required = false) Integer age
+    /**
+     * 测试ribbon负载均衡访问返回实体类对象,参数为对象
+     * @param name
+     * @param age
+     * @return
+     */
+    @GetMapping(value = "/getObjectFromRibbonEntity")
+    public User getObjectFromRibbonEntity(
+            User user
     )
     {
-        if(age == null){
-            age = 20;
+        if(user.getAge() == null){
+            user.setAge(20);
         }
-        User user = new User(name,age);
+        //展示被调用的服务
+        System.out.println(user.toString());
+        return user;
+    }
+
+    /**
+     * 测试ribbon负载均衡访问返回字符串,参数为对象
+     * 因为通过restTemplate进行post请求,如果将request的body参数指定为一个普通对象的话(非httpentity对象)
+     * 那么在请求时,底层会将该对象参数json化,通过application/json的方式将参数传出,因此在提供者接口上,必须以@RequestBody
+     * 来接受参数
+     * @param name
+     * @param age
+     * @return
+     */
+    @PostMapping(value = "/postStringFromRibbonEntity")
+    public String getStringFromRibbonEntity(
+         @RequestBody   User user
+    )
+    {
+        if(user.getAge() == null){
+            user.setAge(20);
+        }
+        //展示被调用的服务
+        System.out.println(user.toString());
+        return JSON.toJSONString(user);
+    }
+
+    /**
+     * 测试ribbon负载均衡访问返回对象,参数为对象
+     * @param name
+     * @param age
+     * @return
+     */
+    @PostMapping(value = "/postObjectFromRibbonEntity")
+    public User postObjectFromRibbonEntity(
+            @RequestBody  User user
+    )
+    {
+        if(user.getAge() == null){
+            user.setAge(20);
+        }
+        //展示被调用的服务
+        System.out.println(user.toString());
         return user;
     }
 
