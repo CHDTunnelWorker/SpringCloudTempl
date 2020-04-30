@@ -106,10 +106,11 @@ public class ConsumerController {
 //        User user = restTemplate.postForObject("http://PROVIDER/provider/postObjectFromRibbonEntity", laohe, User.class);
 //        System.out.println("ribbon:POST通过postForObject,参数通过Object request进行传输,获取User类型结果: "+user.toString());
 
-        //第三种请求方式:postForLocation 以post请求提交资源,并返回新资源的URI
+        //第三种请求方式:postForLocation 以post请求提交资源,并返回新资源的URI(注意,提供者接口必须得返回URI资源,如果接口返回使用了@ResponseBody,则不能正确接收到URI对象)
+        //这种请求方式一般用到需要返回URI资源的场景种,比如登录后需要资源跳转等
         User laoyan = new User("laoyan", 24);
         URI uri = restTemplate.postForLocation("http://PROVIDER/provider/postObjectFromRibbonEntity", laoyan);
-        System.out.println("ribbon:POST通过postForLocation,参数通过Object request进行传输,获取URI类型结果: "+uri.toString());
+        System.out.println("ribbon:POST通过postForLocation,参数通过Object request进行传输,获取URI类型结果: "+uri);
         return ResultBo.success();
     }
 }

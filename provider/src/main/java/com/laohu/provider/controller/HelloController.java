@@ -103,7 +103,7 @@ public class HelloController {
      * @return
      */
     @PostMapping(value = "/postObjectFromRibbonEntity")
-    public User postObjectFromRibbonEntity(
+    public String postObjectFromRibbonEntity(
             @RequestBody  User user
     )
     {
@@ -112,7 +112,7 @@ public class HelloController {
         }
         //展示被调用的服务
         System.out.println(user.toString());
-        return user;
+        return user.toString();
     }
 
 }
