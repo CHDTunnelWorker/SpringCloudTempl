@@ -9,6 +9,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @program: springcloud
@@ -24,7 +25,12 @@ public class HelloController {
     private DiscoveryClient client;
 
     @RequestMapping(value = "/eurekaInfo",method = RequestMethod.GET)
-    public String eurekaInfo(){
+    public String eurekaInfo() throws Exception{
+        //为了测试断路器的阻塞断开,让处理线程休息几秒
+        int sleepTime = new Random().nextInt(4000);
+        System.out.println("sleepTime: "+sleepTime);
+        Thread.sleep(sleepTime);
+
         List<ServiceInstance> provider = client.getInstances("provider");
         ServiceInstance instance = provider.get(0);
         System.out.println("服务提供者实例host地址: "+instance.getHost()+",服务id: "+instance.getServiceId()+",实例id: "+
@@ -103,7 +109,7 @@ public class HelloController {
      * @return
      */
     @PostMapping(value = "/postObjectFromRibbonEntity")
-    public String postObjectFromRibbonEntity(
+    public String  postObjectFromRibbonEntity(
             @RequestBody  User user
     )
     {

@@ -1,16 +1,16 @@
 package com.laohu.consumerribbon.controller;
 
 import bo.ResultBo;
+import com.google.common.base.Stopwatch;
+import com.laohu.consumerribbon.service.ConsumerService;
 import entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Map;
@@ -30,11 +30,17 @@ public class ConsumerController {
     @LoadBalanced
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ConsumerService consumerService;
+
     @GetMapping(value = "/consume")
     public String consume(){
-        System.out.println("4444");
-        //通过ribbon负载均衡,调用服务提供者的服务,注意路径中PROVIDER替代了常规的IP加端口 这体现了eureka重要的服务治理特性
-        return restTemplate.getForEntity("http://PROVIDER/provider/eurekaInfo",String.class).getBody();
+        StopWatch test = new StopWatch("test");
+        test.start("task1");
+        String result = consumerService.consume();
+        test.stop();
+        System.out.println(test.prettyPrint());
+        return result;
     }
 
     /**
