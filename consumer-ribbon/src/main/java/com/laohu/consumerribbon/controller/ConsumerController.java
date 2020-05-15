@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +42,20 @@ public class ConsumerController {
         test.stop();
         System.out.println(test.prettyPrint());
         return result;
+    }
+
+    /**
+     * 测试Hystrix的请求命令结果缓存
+     * @param name
+     * @param age
+     * @return
+     */
+    @GetMapping(value = "/consumeHystrixCache")
+    public String consumeHystrixCache(
+            String name,String age
+    )
+    {
+        return consumerService.consumeHystrixCache(name,age);
     }
 
     /**
@@ -114,9 +129,31 @@ public class ConsumerController {
 
         //第三种请求方式:postForLocation 以post请求提交资源,并返回新资源的URI(注意,提供者接口必须得返回URI资源,如果接口返回使用了@ResponseBody,则不能正确接收到URI对象)
         //这种请求方式一般用到需要返回URI资源的场景种,比如登录后需要资源跳转等
-        User laoyan = new User("laoyan", 24);
+        User laoyan = new User(4L,"laoyan", 24);
         URI uri = restTemplate.postForLocation("http://PROVIDER/provider/postObjectFromRibbonEntity", laoyan);
         System.out.println("ribbon:POST通过postForLocation,参数通过Object request进行传输,获取URI类型结果: "+uri);
         return ResultBo.success();
+    }
+
+    /**
+     * 测试Hystrix请求命令合并操作
+     * @param id
+     * @return
+     */
+    @GetMapping("/findUser")
+    public ResultBo findUser(Long id){
+        User user = consumerService.findUser(id);
+        return ResultBo.success(user);
+    }
+
+    /**
+     * 测试Hystrix请求命令合并操作
+     * @param ids
+     * @return
+     */
+    @GetMapping("/findAllUsers")
+    public ResultBo findAllUsers(String ids){
+        List<User> users = consumerService.findAllUsers(ids);
+        return ResultBo.success(users);
     }
 }

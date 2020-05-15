@@ -8,8 +8,11 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @program: springcloud
@@ -55,7 +58,7 @@ public class HelloController {
         } else {
             ageNum = Integer.valueOf(age);
         }
-        User user = new User(name,ageNum);
+        User user = new User(4L,name,ageNum);
         //展示被调用的服务
         System.out.println(user.toString());
         return user.toString();
@@ -63,8 +66,6 @@ public class HelloController {
 
     /**
      * 测试ribbon负载均衡访问返回实体类对象,参数为对象
-     * @param name
-     * @param age
      * @return
      */
     @GetMapping(value = "/getObjectFromRibbonEntity")
@@ -85,8 +86,6 @@ public class HelloController {
      * 因为通过restTemplate进行post请求,如果将request的body参数指定为一个普通对象的话(非httpentity对象)
      * 那么在请求时,底层会将该对象参数json化,通过application/json的方式将参数传出,因此在提供者接口上,必须以@RequestBody
      * 来接受参数
-     * @param name
-     * @param age
      * @return
      */
     @PostMapping(value = "/postStringFromRibbonEntity")
@@ -104,8 +103,6 @@ public class HelloController {
 
     /**
      * 测试ribbon负载均衡访问返回对象,参数为对象
-     * @param name
-     * @param age
      * @return
      */
     @PostMapping(value = "/postObjectFromRibbonEntity")
@@ -121,4 +118,28 @@ public class HelloController {
         return user.toString();
     }
 
+    /**
+     * 测试Hystrix请求命令合并操作
+     * @param id
+     * @return
+     */
+    @GetMapping("/getUserById")
+    public User getUserById(Long id){
+        return new User().setId(id).setName("laohu").setAge(23);
+    }
+
+    /**
+     * 测试Hystrix请求命令合并操作
+     * @param ids
+     * @return
+     */
+    @GetMapping("/getUserByIds")
+    public List<User> getUserByIds(String ids){
+        String[] split = StringUtils.split(ids, ",");
+        List<String> idStrList = new ArrayList<>(Arrays.asList(split));
+        List<Long> idList = idStrList.stream().map(a -> Long.parseLong(a)).collect(Collectors.toList());
+        List<User> users = idList.stream().map(id -> new User().setId(id).setName("yanbo").setAge(24))
+                .collect(Collectors.toList());
+        return users;
+    }
 }
